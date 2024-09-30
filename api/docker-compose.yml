@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+    db:
+      image: mysql
+      env_file: ./.env
+      environment:
+   #    - MYSQL_USER=$DB_USER
+   #    - MYSQL_PASSWORD=$DB_PASSWORD
+       - MYSQL_ROOT_PASSWORD=$DB_ROOT_PASSWORD
+       - MYSQL_DATABASE=$DB_NAME
+      ports:
+      - $DB_LOCAL_PORT:$DB_DOCKER_PORT
+      logging:
+        driver: none
+
+    app:
+      depends_on:
+      - db
+      links:
+      - db
+      build:  .
+      env_file: ./.env
+      ports: 
+      - $NODE_LOCAL_PORT:$NODE_DOCKER_PORT
+      environment:
+      - NODE_ENV=dev
+      - DB_HOST=$DB_HOST
+      - DB_USER=$DB_USER
+      - DB_PASSWORD=$DB_PASSWORD
+      - DB_NAME=$DB_NAME
+      - DB_PORT=$DB_DOCKER_PORT
+#      volumes:
+ #     - .:/myapp
+ #   command: sh -c "npm install && npm run dev"
+      
